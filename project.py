@@ -7,6 +7,7 @@ matrix = []
 node_names = []
 unvisited = []
 visited = []
+total_cost_list = []
 previous_index = ['', '', '', '', '', '']
 shortest_distance = [9999, 9999, 9999, 9999, 9999, 9999]
 
@@ -24,28 +25,47 @@ def main():
     node = input("Please, provide the source node: ")
 
     print("Shortest path tree for node " + node + ": ")
-
+    
     current_vertex = node_names.index(node)
     previous_vertex = 0
-    for i in range(len(node_names)):
-        if int(matrix[current_vertex][i]) < 9999:
-            total_cost = int(matrix[current_vertex][i]) + int(matrix[previous_vertex][previous_vertex])
-            if total_cost < shortest_distance[i]:
-                shortest_distance[i] = total_cost
-
-    previous_vertex = current_vertex
-    current_vertex = shortest_distance.index(sorted(shortest_distance)[1])
-
-    print(previous_vertex)
-    print(current_vertex)
     
     for i in range(len(node_names)):
-        if int(matrix[current_vertex][i]) < 9999:
-            total_cost = int(matrix[current_vertex][i]) + int(matrix[previous_vertex][current_vertex])
-            if total_cost < shortest_distance[i]:
-                shortest_distance[i] = total_cost
+        
+        total_cost = int(matrix[current_vertex][i]) + int(matrix[current_vertex][current_vertex])
+        total_cost_list.append(total_cost)
+        
+        if total_cost < shortest_distance[i]:
+            shortest_distance[i] = total_cost
 
+    previous_vertex = current_vertex
+    current_vertex = shortest_distance.index(sorted(total_cost_list)[1])
+
+    for i in range(len(node_names)):
+
+        total_cost = int(matrix[current_vertex][i]) + int(matrix[previous_vertex][current_vertex])
+        if total_cost < shortest_distance[i]:
+            shortest_distance[i] = total_cost
+    
+    previous_vertex = current_vertex
+    current_vertex = 1
+
+    for i in range(len(node_names)):
+
+        total_cost = int(matrix[current_vertex][i]) + int(matrix[previous_vertex][current_vertex]) + int(matrix[0][previous_vertex])
+        if total_cost < shortest_distance[i]:
+            shortest_distance[i] = total_cost
+
+    previous_vertex = current_vertex
+    current_vertex = 4
+
+    for i in range(len(node_names)):
+
+        total_cost = int(matrix[current_vertex][i]) + int(matrix[previous_vertex][current_vertex]) + int(matrix[0][2]) + int(matrix[2][previous_vertex])
+        if total_cost < shortest_distance[i]:
+            shortest_distance[i] = total_cost
+            
     print(shortest_distance)
+    
 
 main()
     
