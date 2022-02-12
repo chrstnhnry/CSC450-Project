@@ -6,6 +6,10 @@ excel_file = sys.argv[1]
 matrix = []
 node_names = []
 unvisited = []
+visited = []
+previous_index = ['', '', '', '', '', '']
+shortest_distance = [9999, 9999, 9999, 9999, 9999, 9999]
+
 with open(excel_file, "r") as csv_file:
     csv_reader = csv.reader(csv_file)
     next(csv_reader, 1)
@@ -17,42 +21,31 @@ with open(excel_file, "r") as csv_file:
 
 def main():
 
-    shortest_distance = [9999, 9999, 9999, 9999, 9999, 9999]
-
     node = input("Please, provide the source node: ")
-
-    previous_index = [node, node, node, node, node, node]
-
-    visited = []
 
     print("Shortest path tree for node " + node + ": ")
 
-    #the index of row of node
-    row = node_names.index(node)
-    print(row)
-    visited.append(node_names[row])
-    del unvisited[row]
+    current_vertex = node_names.index(node)
+    previous_vertex = 0
     for i in range(len(node_names)):
-        shortest_distance[i] = int(matrix[row][i])
-        
+        if int(matrix[current_vertex][i]) < 9999:
+            total_cost = int(matrix[current_vertex][i]) + int(matrix[previous_vertex][previous_vertex])
+            if total_cost < shortest_distance[i]:
+                shortest_distance[i] = total_cost
 
-    row = shortest_distance.index(sorted(shortest_distance)[1])
-    print(row)
-    visited.append(node_names[row])
-    del unvisited[row-1]
+    previous_vertex = current_vertex
+    current_vertex = shortest_distance.index(sorted(shortest_distance)[1])
+
+    print(previous_vertex)
+    print(current_vertex)
+    
     for i in range(len(node_names)):
-        
-        cost = sum(int(matrix[row][i]), shortest_distance[row])
-                   
-        if (shortest_distance[i] > cost):
-            shortest_distance[i] = cost
+        if int(matrix[current_vertex][i]) < 9999:
+            total_cost = int(matrix[current_vertex][i]) + int(matrix[previous_vertex][current_vertex])
+            if total_cost < shortest_distance[i]:
+                shortest_distance[i] = total_cost
 
-    print(visited)
-    print(unvisited)
-    print(node_names)
-            
-def sum(n1, n2):
-    return n1 + n2
+    print(shortest_distance)
 
 main()
     
