@@ -21,7 +21,8 @@ with open(excel_file, "r") as csv_file:
         unvisited.append(line[0])
 
 def main2():
-
+    
+    node = input("Please, provide the source node: ")
     current_vertex = node_names.index(node)
     previous_vertex = current_vertex
 
@@ -29,12 +30,12 @@ def main2():
     for i in range(len(node_names)):
         
         visited.append(current_vertex)
-        unvisited.remove(node_names[current_vertex])
+        #unvisited.remove(node_names[current_vertex])
         
         #column
         for j in range(len(node_names)):
             
-            if int(matrix[current_vertex][j] < 9999:
+            if int(matrix[current_vertex][j]) < 9999:
                 total_cost = totalCost(current_vertex, previous_vertex, j, visited)
                    
             else:
@@ -43,30 +44,41 @@ def main2():
             row_cost.append(total_cost)
             
             if total_cost < shortest_distance[j]:
-                shortest_distance[i] = total_cost
+                shortest_distance[j] = total_cost
         
         previous_vertex = current_vertex
-                   
+        print(row_cost)
         #set current vertex
         while True:
             
-            if visited.count(row_cost.index(min(a))) > 0:
-                current_vertex = row_cost.index(min(a))
+            if visited.count(row_cost.index(min(row_cost))) > 0:
+                current_vertex = row_cost.index(min(row_cost))
+                row_cost[row_cost.index(min(row_cost))] = 9999
                 break
         
             else:
-                row_cost.index(min(a)) = 9999
-
+                row_cost[row_cost.index(min(row_cost))] = 9999
+        print(current_vertex)
         #clear row total cost
-        row_cost.clear()
+        #row_cost.clear()
+
+    print(shortest_distance)
         
 
 def totalCost(current_vertex, previous_vertex, j, visited):
-    if len(visited) == 1:
-        return int(matrix[current_vertex][j])
 
+    if visited is None:
+        #print('hi')
+        return 0
+
+    if len(visited) == 1:
+        #print('hello')
+        return int(matrix[current_vertex][j])
+    
     else:
-        return int(matrix[][]) + totalCost(curent_vertex, previous_vertex, j, )
+        a = visited[-1]
+        b = visited[-2]
+        return int(matrix[a][b]) + totalCost(current_vertex, previous_vertex, j, visited.remove(a))
 
 
 
@@ -131,5 +143,5 @@ def main():
     print(shortest_distance)
     
 
-main()
+main2()
     
