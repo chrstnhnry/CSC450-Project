@@ -8,7 +8,7 @@ matrix = []
 node_names = []
 unvisited = []
 visited = []
-visited_2 = [0,0,0,0,0,0]
+visitedCheck = [0,0,0,0,0,0]
 previous_index = []
 shortest_distance = [9999, 9999, 9999, 9999, 9999, 9999]
 
@@ -27,10 +27,11 @@ def main2():
     current_vertex = node_names.index(node)
     previous_vertex = current_vertex
     visited.append(current_vertex)
+    #visitedCheck[current_vertex] = 9999
+    
     #row
     for i in range(len(node_names)):
-        
-        
+
         #unvisited.remove(node_names[current_vertex])
         #column
         for j in range(len(node_names)):
@@ -52,15 +53,20 @@ def main2():
         i = 0
         while i < 1:
             print("row cost:" + str(row_cost))
-            if (visited.count(row_cost.index(min(row_cost))) < 1):
+            print(row_cost.index(min(row_cost)))
+            print("Visited Check: " + str(visitedCheck))
+            print("Visited: " + str(visited))
+            if ((visited.count(row_cost.index(min(row_cost))) < 1) & (visitedCheck[row_cost.index(min(row_cost))] != 9999)):
                 current_vertex = row_cost.index(min(row_cost))
                 print("current vertex: " + str(current_vertex))
-                row_cost[row_cost.index(min(row_cost))] = 9999
+                #row_cost[row_cost.index(min(row_cost))] = 9999
+                visitedCheck[row_cost.index(min(row_cost))] = 9999
                 i+=1
 
             else:
-                if row_cost == [9999,9999,9999,9999,9999,9999]:
+                if visitedCheck == [9999,9999,9999,9999,9999,9999]:
                     i+=1
+                visitedCheck[row_cost.index(min(row_cost))] = 9999
                 row_cost[row_cost.index(min(row_cost))] = 9999
                 
         visited.append(current_vertex)
@@ -84,15 +90,6 @@ def totalCost(current_vertex, previous_vertex, j, poggers):
         a = poggers[-1]
         b = poggers[-2]
         return int(matrix[a][b]) + totalCost(current_vertex, previous_vertex, j, poggers[:-1])
-
-
-
-
-
-
-
-
-
 
 
 def main():
