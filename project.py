@@ -8,6 +8,7 @@ matrix = []
 node_names = []
 unvisited = []
 visited = []
+visited_2 = [0,0,0,0,0,0]
 previous_index = []
 shortest_distance = [9999, 9999, 9999, 9999, 9999, 9999]
 
@@ -25,19 +26,18 @@ def main2():
     node = input("Please, provide the source node: ")
     current_vertex = node_names.index(node)
     previous_vertex = current_vertex
-
+    visited.append(current_vertex)
     #row
     for i in range(len(node_names)):
         
-        visited.append(current_vertex)
-        #unvisited.remove(node_names[current_vertex])
         
+        #unvisited.remove(node_names[current_vertex])
         #column
         for j in range(len(node_names)):
             
             if int(matrix[current_vertex][j]) < 9999:
                 total_cost = totalCost(current_vertex, previous_vertex, j, visited)
-                   
+                print("total cost: " + str(total_cost))
             else:
                 total_cost = 9999
                 
@@ -47,38 +47,43 @@ def main2():
                 shortest_distance[j] = total_cost
         
         previous_vertex = current_vertex
-        print(row_cost)
+        
         #set current vertex
-        while True:
-            
-            if visited.count(row_cost.index(min(row_cost))) > 0:
+        i = 0
+        while i < 1:
+            print("row cost:" + str(row_cost))
+            if (visited.count(row_cost.index(min(row_cost))) < 1):
                 current_vertex = row_cost.index(min(row_cost))
+                print("current vertex: " + str(current_vertex))
                 row_cost[row_cost.index(min(row_cost))] = 9999
-                break
-        
+                i+=1
+
             else:
+                if row_cost == [9999,9999,9999,9999,9999,9999]:
+                    i+=1
                 row_cost[row_cost.index(min(row_cost))] = 9999
-        print(current_vertex)
+                
+        visited.append(current_vertex)
+        print("visited: " + str(visited))
         #clear row total cost
-        #row_cost.clear()
+        row_cost.clear()
 
-    print(shortest_distance)
+        print("shortest distance: " + str(shortest_distance))
         
 
-def totalCost(current_vertex, previous_vertex, j, visited):
+def totalCost(current_vertex, previous_vertex, j, poggers):
+    print("VISITED" + str(poggers))
 
-    if visited is None:
-        #print('hi')
-        return 0
-
-    if len(visited) == 1:
-        #print('hello')
+    if len(poggers) == 1:
         return int(matrix[current_vertex][j])
+
+    elif len(poggers) == 2:
+        return int(matrix[current_vertex][j]) + int(matrix[previous_vertex][current_vertex])
     
     else:
-        a = visited[-1]
-        b = visited[-2]
-        return int(matrix[a][b]) + totalCost(current_vertex, previous_vertex, j, visited.remove(a))
+        a = poggers[-1]
+        b = poggers[-2]
+        return int(matrix[a][b]) + totalCost(current_vertex, previous_vertex, j, poggers[:-1])
 
 
 
