@@ -78,7 +78,7 @@ def main2():
         
 
 def totalCost(current_vertex, previous_vertex, j, poggers):
-    print("VISITED" + str(poggers))
+    #print("VISITED: " + str(poggers))
 
     if len(poggers) == 1:
         return int(matrix[current_vertex][j])
@@ -87,9 +87,9 @@ def totalCost(current_vertex, previous_vertex, j, poggers):
         return int(matrix[current_vertex][j]) + int(matrix[previous_vertex][current_vertex])
     
     else:
-        a = poggers[-1]
-        b = poggers[-2]
-        return int(matrix[a][b]) + totalCost(current_vertex, previous_vertex, j, poggers[:-1])
+        a = poggers[0]
+        b = poggers[1]
+        return int(matrix[a][b]) + totalCost(current_vertex, previous_vertex, j, poggers[1:])
 
 
 def main():
