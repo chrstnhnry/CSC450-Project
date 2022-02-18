@@ -126,27 +126,22 @@ class Graph:
 
     def bellman_ford(self, src):
 
-        # Step 1: fill the distance array and predecessor array
+
         dist = [9999] * self.V
-        # Mark the source vertex
-        node = input("Please, provide the source node: ")
+        node = input("Please, provide the source node(as a number): ")
         dist[src] = int(node)
         print(self.graph)
-        # Step 2: relax edges |V| - 1 times
+
         for _ in range(self.V - 1):
             for s, d, w in self.graph:
                 if dist[s] != 9999 and dist[s] + w < dist[d]:
                     dist[d] = dist[s] + w
-        # Step 3: detect negative cycle
-        # if value changes then we have a negative cycle in the graph
-        # and we cannot find the shortest distances
+
         for s, d, w in self.graph:
             if dist[s] != 9999 and dist[s] + w < dist[d]:
                 print("Graph contains negative weight cycle")
                 return
 
-        # No negative weight cycle found!
-        # Print the distance and predecessor array
         self.print_solution(dist)
 
 def buildG(g):
