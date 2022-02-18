@@ -1,5 +1,7 @@
 import sys
 import csv
+from turtle import distance
+from urllib.parse import _NetlocResultMixinStr
 
 excel_file = sys.argv[1]
 row_cost = []
@@ -11,6 +13,7 @@ visited = []
 visitedCheck = [0,0,0,0,0,0]
 previous_index = []
 shortest_distance = [9999, 9999, 9999, 9999, 9999, 9999]
+node = ""
 
 with open(excel_file, "r") as csv_file:
     csv_reader = csv.reader(csv_file)
@@ -93,4 +96,60 @@ def totalCost(current_vertex, previous_vertex, j, poggers):
 
 
 main()
-    
+
+#this is very much a work in progress 
+distance = []
+prev = []
+class Graph:
+
+    def __init__(self, vertices = 0):
+        self.V = vertices   
+        self.graph = []     
+
+    def add_edge(self, s, d, w):
+        self.graph.append([s, d, w])
+
+    def bellamnFord():
+        for vertex in matrix:
+            distance.append(9999)
+            prev.append(None)
+        current_vertex = node_names.index(node)
+        distance[current_vertex] = 0
+
+    def bellman_ford(self, src):
+
+        # Step 1: fill the distance array and predecessor array
+        dist = [float("Inf")] * self.V
+        # Mark the source vertex
+        dist[src] = 0
+
+        # Step 2: relax edges |V| - 1 times
+        for _ in range(self.V - 1):
+            for s, d, w in self.graph:
+                if dist[s] != float("Inf") and dist[s] + w < dist[d]:
+                    dist[d] = dist[s] + w
+
+        # Step 3: detect negative cycle
+        # if value changes then we have a negative cycle in the graph
+        # and we cannot find the shortest distances
+        for s, d, w in self.graph:
+            if dist[s] != float("Inf") and dist[s] + w < dist[d]:
+                print("Graph contains negative weight cycle")
+                return
+
+        # No negative weight cycle found!
+        # Print the distance and predecessor array
+        self.print_solution(dist)
+
+def buildG(g):
+    for i in matrix:
+        for j in i:
+            print (i)
+            if(int(matrix[i][j]) != 9999):
+                g.add_edge(i[j],j,matrix[i[j]][j])
+                g.vertices = g.vertices + 1
+    return g
+
+g = Graph()
+#g = buildG(g)
+#g.bellamnFord(0)
