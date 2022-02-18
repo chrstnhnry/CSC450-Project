@@ -95,7 +95,7 @@ def totalCost(current_vertex, previous_vertex, j, poggers):
         return int(matrix[a][b]) + totalCost(current_vertex, previous_vertex, j, poggers[1:])
 
 
-main()
+#main()
 
 #this is very much a work in progress 
 distance = []
@@ -106,34 +106,42 @@ class Graph:
         self.V = vertices   
         self.graph = []     
 
+    @property
+    def V(self):
+        return self._V
+    
+    @V.setter
+    def V(self, v):
+        self._V = v
+
+
     def add_edge(self, s, d, w):
         self.graph.append([s, d, w])
 
-    def bellamnFord():
-        for vertex in matrix:
-            distance.append(9999)
-            prev.append(None)
-        current_vertex = node_names.index(node)
-        distance[current_vertex] = 0
+        # Print the solution
+    def print_solution(self, dist):
+        print("Vertex Distance from Source")
+        for i in range(self.V):
+            print("{0}\t\t{1}".format(i, dist[i]))
 
     def bellman_ford(self, src):
 
         # Step 1: fill the distance array and predecessor array
-        dist = [float("Inf")] * self.V
+        dist = [9999] * self.V
         # Mark the source vertex
-        dist[src] = 0
-
+        node = input("Please, provide the source node: ")
+        dist[src] = int(node)
+        print(self.graph)
         # Step 2: relax edges |V| - 1 times
         for _ in range(self.V - 1):
             for s, d, w in self.graph:
-                if dist[s] != float("Inf") and dist[s] + w < dist[d]:
+                if dist[s] != 9999 and dist[s] + w < dist[d]:
                     dist[d] = dist[s] + w
-
         # Step 3: detect negative cycle
         # if value changes then we have a negative cycle in the graph
         # and we cannot find the shortest distances
         for s, d, w in self.graph:
-            if dist[s] != float("Inf") and dist[s] + w < dist[d]:
+            if dist[s] != 9999 and dist[s] + w < dist[d]:
                 print("Graph contains negative weight cycle")
                 return
 
@@ -142,14 +150,13 @@ class Graph:
         self.print_solution(dist)
 
 def buildG(g):
-    for i in matrix:
-        for j in i:
-            print (i)
-            if(int(matrix[i][j]) != 9999):
-                g.add_edge(i[j],j,matrix[i[j]][j])
-                g.vertices = g.vertices + 1
+    for i in range(len(node_names)):
+        for j in range(len(node_names)):
+            if(int(matrix[j][i]) != 9999):
+                g.add_edge(i,j,int(matrix[j][i]))
+                g.V = g.V + 1
     return g
 
-g = Graph()
-#g = buildG(g)
-#g.bellamnFord(0)
+g = Graph(5)
+g = buildG(g)
+g.bellman_ford(0)
