@@ -1,157 +1,248 @@
+import csv # allows us to use and maniupulate csv files
+from copy import deepcopy
 import sys
-import csv
-from turtle import distance
-from urllib.parse import _NetlocResultMixinStr
 
-excel_file = sys.argv[1]
-row_cost = []
-total_cost_list = []
-matrix = []
-node_names = []
-unvisited = []
-visited = []
-visitedCheck = [0,0,0,0,0,0]
-previous_index = []
-shortest_distance = [9999, 9999, 9999, 9999, 9999, 9999]
-node = ""
 
-with open(excel_file, "r") as csv_file:
-    csv_reader = csv.reader(csv_file)
-    next(csv_reader, 1)
-    for line in csv_reader:
-        
-        matrix.append(line[1:])
-        node_names.append(line[0])
-        unvisited.append(line[0])
+#######################################################
+##                    FUNCTIONS                      ##
+#######################################################
 
-def main():
-    
+# function to print out a csv file
+def csvToArray(fileName):
+    # open and read the file
+    with open(fileName, mode="r") as csv_file: 
+        reader = csv.reader(csv_file) 
+        csvArray = []
+        # add every item from csv file to array
+        for item in reader:
+            csvArray.append(item) 
+    return csvArray
+
+# function to print 2D array
+# was used for debugging
+def printArray2D(array):
+    for x in array:
+        for y in x:
+            print(y, end="\t")
+        print()
+
+# function to get source node
+# must take in the array made from the csv file 
+# (this function is dependent on the nodes being in the first row of the csv file)
+def sourceNode(nodeArray):
     node = input("Please, provide the source node: ")
-    current_vertex = node_names.index(node)
-    previous_vertex = current_vertex
-    visited.append(current_vertex)
-    #visitedCheck[current_vertex] = 9999
+    for x in nodeArray:
+        # check to see if node is present in csv file
+        if(str(x) == node):
+            return node
+    # if not, run the function again
+    print("Invalid source node.")
+    return sourceNode(nodeArray)   
+
+# a function that will create a diction that says whether the nodes have been visited yet
+def visitedDict(array, source):
+    visitedDict = {}
+    # set dictionary to all nodes unvisited
+    for x in range(1, len(array[0])):
+        visitedDict[array[0][x]] = False
+    # make the source node visited
+    visitedDict[source] = True
+    return visitedDict
+
+# a function to get just the nodes from the csv file and put them into an array
+def nodeArray(array):
+    ar = []
+    for x in range(1, len(array[0])):
+        ar.append(array[0][x])
+    return ar
+
+# a function to alphebetize a list of strings, but also have them go from shortest to longest
+def alphabetize(array):
+    # copy of array
+    copy = []
+
+    # set that contains all lengths of strings
+    lengths = set()
+
+    # copy the array; add lengths to the set
+    for item in array:
+        copy.append(item)
+        lengths.add(len(item))
+
+    # sort the list regularly
+    copy.sort()
+
+    # the list that will be returned
+    final = []
+
+    # order by length
+    for length in lengths:
+        for item in copy:
+            if(len(item) == length):
+                final.append(item)
     
-    #row
-    for i in range(len(node_names)):
+    return final
 
-        #unvisited.remove(node_names[current_vertex])
-        #column
-        for j in range(len(node_names)):
-            
-            if int(matrix[current_vertex][j]) < 9999:
-                total_cost = totalCost(current_vertex, previous_vertex, j, visited)
-                print("total cost: " + str(total_cost))
-            else:
-                total_cost = 9999
-                
-            row_cost.append(total_cost)
-            
-            if total_cost < shortest_distance[j]:
-                shortest_distance[j] = total_cost
-        
-        previous_vertex = current_vertex
-        
-        #set current vertex
-        i = 0
-        while i < 1:
-            print("row cost:" + str(row_cost))
-            print(row_cost.index(min(row_cost)))
-            print("Visited Check: " + str(visitedCheck))
-            print("Visited: " + str(visited))
-            if ((visited.count(row_cost.index(min(row_cost))) < 1) & (visitedCheck[row_cost.index(min(row_cost))] != 9999)):
-                current_vertex = row_cost.index(min(row_cost))
-                print("current vertex: " + str(current_vertex))
-                #row_cost[row_cost.index(min(row_cost))] = 9999
-                visitedCheck[row_cost.index(min(row_cost))] = 9999
-                i+=1
+# dijkstras algorithm
+# takes in csv array
+def dijkstra(array):
+    # dictionary that contains the shortest path to each node
+    # will be updated
+    shortestPath = {}
 
-            else:
-                if visitedCheck == [9999,9999,9999,9999,9999,9999]:
-                    i+=1
-                visitedCheck[row_cost.index(min(row_cost))] = 9999
-                row_cost[row_cost.index(min(row_cost))] = 9999
-                
-        visited.append(current_vertex)
-        print("visited: " + str(visited))
-        #clear row total cost
-        row_cost.clear()
+    # dictionary to save the shortest currently known path to a node
+    prevPath = {}
 
-        print("shortest distance: " + str(shortest_distance))
-        
+    # value set in csv file that is considered infinity
+    infinity = 9999
 
-def totalCost(current_vertex, previous_vertex, j, poggers):
-    #print("VISITED: " + str(poggers))
+    # get an array of all the nodes in the graph
+    nodeAr = nodeArray(array)
 
-    if len(poggers) == 1:
-        return int(matrix[current_vertex][j])
-
-    elif len(poggers) == 2:
-        return int(matrix[current_vertex][j]) + int(matrix[previous_vertex][current_vertex])
+    # since all nodes are currently unvisited, do the same command and apply to unvisited node list
+    unvisitedNodes = nodeArray(array)
     
-    else:
-        a = poggers[0]
-        b = poggers[1]
-        return int(matrix[a][b]) + totalCost(current_vertex, previous_vertex, j, poggers[1:])
+    # get the source node
+    source = sourceNode(nodeAr)
 
-
-#main()
-
-#this is very much a work in progress 
-distance = []
-prev = []
-class Graph:
-
-    def __init__(self, vertices = 0):
-        self.V = vertices   
-        self.graph = []     
-
-    @property
-    def V(self):
-        return self._V
+    # make all shortest paths equivalent to infinity
+    for node in nodeAr:
+        shortestPath[node] = infinity
     
-    @V.setter
-    def V(self, v):
-        self._V = v
+    # make the source node path = 0
+    shortestPath[source] = 0
+
+    # do the algorithm until all nodes are visited
+    while unvisitedNodes:
+        # node with lowest cost
+        curMin = None
+        for node in unvisitedNodes:
+            # if there hasnt been set a lowest cost, set the first one as lowest
+            if curMin == None:
+                curMin = node
+            # compare the shortest path of the current node to the min that we have
+            elif shortestPath[node] < shortestPath[curMin]:
+                curMin = node
+
+        # retrieve the current nodes neighbors and update distances
+        #get the index of the current minimum node
+        indexofMin = nodeAr.index(curMin)
+        # neighbors of the current node
+        neighbors = {}
+        # go through each neighbor in the array
+        for x in range(1,len(array[indexofMin+1])):
+            # make sure the neighbor isnt itself or infinity
+            if(int(array[indexofMin+1][x]) != infinity and int(array[indexofMin+1][x]) != 0):
+                neighbors[nodeAr[x-1]] = array[indexofMin+1][x]
+        
+        for neighbor in neighbors:
+            tempVal = shortestPath[curMin] + int(neighbors[neighbor])
+            if tempVal < shortestPath[neighbor]:
+                shortestPath[neighbor] = tempVal
+                # update best path to current node
+                prevPath[neighbor] = curMin
+        
+        # after visiting all the neighbors, the node has been visited
+        # can remove it from unvisited list
+        unvisitedNodes.remove(curMin)
+    
+    # return the shortest path and revious nodes, and source node
+    return shortestPath, prevPath, source
+
+# function to clean up shortestPath and prevPath
+# parameters: shortest path dict, previous node dict, array of nodes in graph, source node
+def cleanOutputDijkstra(shortest, prev, nodeAr, source):
+    # generate output for shortest path
+    shortStr = ""
+    for x in range(len(shortest)-1):
+        shortStr =  shortStr + str(nodeAr[x]) + ":" + str(shortest[nodeAr[x]]) + ", "
+    shortStr = shortStr + str(nodeAr[len(shortest)-1]) + ":" + str(shortest[nodeAr[len(shortest)-1]])
+    
+    # generate output for path taken
+    prevStringAr = []
+    for key in prev.keys():
+        path = key
+        prevNode = prev[key]
+        while(prevNode != source):
+            path = prevNode + path
+            prevNode = prev[prevNode]
+        prevStringAr.append(source + path)
+
+    prevStringAr = alphabetize(prevStringAr)
+    prevStr = ""
+    for x in range(len(prevStringAr)-1):
+        prevStr += prevStringAr[x] + ", "
+    prevStr += prevStringAr[len(prevStringAr)-1]
+    
+    print(("Shortest path tree for node {}: ").format(source))
+    print(prevStr)
+    print(("Costs of the least-cost paths for node {}:").format(source))
+    print(shortStr)
+
+# makes a dictionary of all neighbors and their coordinates on the array from csv
+def getNeighbors(source, nodeAr, array):
+    infinity = 9999
+    neighbors = {}
+    sourceIndex = nodeAr.index(source) + 1
+    for x in range(len(nodeAr)):
+        if(int(array[sourceIndex][x+1]) != 0 and int(array[sourceIndex][x+1]) != infinity):
+            neighbors[nodeAr[x]] = [sourceIndex,x+1]
+    return neighbors
+
+# function to perform the distance vector routing algorithm 
+def dvr(array, nodeAr, source):
+    # infinity value
+    infinity = 9999
+
+    # dictionary to store distances
+    distances = {}
+    
+    # set all neighbors to infinity
+    for node in nodeAr:
+       distances[node] = infinity
+    # set source node to 0
+    distances[source] = 0
+
+    # cycle through the algorithm num(nodes) - 1 times
+    for _ in range(len(nodeAr)-1):
+        # you will check each node
+        for node in nodeAr:
+            # get the nodes neighbors
+            neighbors = getNeighbors(node, nodeAr, array)
+            # analyze the neighbors
+            for item in neighbors.items():
+                # calculate the temporary distance 
+                # item[0] is the node name (e.g. 'u', 'v', etc)
+                # [item[1][row]][item[1][column]] is the row and column of a weight accroding to csv array 
+                tempDist = distances[item[0]] + int(array[item[1][0]][item[1][1]])
+                # if the calculated distance is less than the one in dictionary, then change it
+                if tempDist < distances[node]:
+                    distances[node] = tempDist
+    
+    # return the distances array
+    return distances
+
+# function to clean up the output of the dvr algorithm
+def cleanOutputDVR(distDict, source):
+    outputStr = "Distance vector for node {}: ".format(source)
+    for value in distDict.values():
+        outputStr += "{} ".format(value)
+    print(outputStr)
 
 
-    def add_edge(self, s, d, w):
-        self.graph.append([s, d, w])
+# main function
+def main():
+    ar = csvToArray(sys.argv[1])
+    nodeAr = nodeArray(ar)
+    short, prev, source = dijkstra(ar)
+    cleanOutputDijkstra(short, prev, nodeAr, source)
+    print()
+    for node in nodeAr:
+        distances = dvr(ar,nodeAr,node)
+        cleanOutputDVR(distances, node)
 
-        # Print the solution
-    def print_solution(self, dist):
-        print("Vertex Distance from Source")
-        for i in range(self.V):
-            print("{0}\t\t{1}".format(i, dist[i]))
 
-    def bellman_ford(self, src):
-
-
-        dist = [9999] * self.V
-        node = input("Please, provide the source node(as a number): ")
-        dist[src] = int(node)
-        print(self.graph)
-
-        for _ in range(self.V - 1):
-            for s, d, w in self.graph:
-                if dist[s] != 9999 and dist[s] + w < dist[d]:
-                    dist[d] = dist[s] + w
-
-        for s, d, w in self.graph:
-            if dist[s] != 9999 and dist[s] + w < dist[d]:
-                print("Graph contains negative weight cycle")
-                return
-
-        self.print_solution(dist)
-
-def buildG(g):
-    for i in range(len(node_names)):
-        for j in range(len(node_names)):
-            if(int(matrix[j][i]) != 9999):
-                g.add_edge(i,j,int(matrix[j][i]))
-                g.V = g.V + 1
-    return g
-
-g = Graph(5)
-g = buildG(g)
-g.bellman_ford(0)
+###########################################################
+##                    RUNNING THE CODE                   ## 
+###########################################################
+main()
