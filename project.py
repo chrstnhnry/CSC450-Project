@@ -1,11 +1,6 @@
-import csv # allows us to use and maniupulate csv files
+import csv
 from copy import deepcopy
 import sys
-
-
-#######################################################
-##                    FUNCTIONS                      ##
-#######################################################
 
 # function to print out a csv file
 def csvToArray(fileName):
@@ -241,8 +236,4 @@ def main():
         distances = dvr(ar,nodeAr,node)
         cleanOutputDVR(distances, node)
 
-
-###########################################################
-##                    RUNNING THE CODE                   ## 
-###########################################################
 main()
